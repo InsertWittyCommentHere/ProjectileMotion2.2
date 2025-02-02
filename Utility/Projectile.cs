@@ -8,11 +8,11 @@ namespace Utility
 {
     public class Projectile
     {
-        public Vector Position { get; set; }
-        public Vector Velocity { get; set; }
-        public double Mass { get; set; }
-        public Vector Acceleration { get; set; }
-        public double DragCoefficient { get; set; }
+        public Vector Position { get; private set; }
+        public Vector Velocity { get; private set; }
+        public double Mass { get; private set; }
+        public Vector Acceleration { get; private set; }
+        public double DragCoefficient { get; private set; }
 
         public Projectile(Vector position, Vector velocity, double mass, double dragCoefficient)
         {

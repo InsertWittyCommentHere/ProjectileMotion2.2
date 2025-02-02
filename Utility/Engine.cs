@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace Utility
 {
+    public enum Level {NONE, ONE, TWO, THREE};
     public class Engine
     {
         private double Time { get; set; }
         private double GravityForce { get; set; }
 
         private Vector NetForce { get; set; }
-
+        
         private double springCoefficient;
 
         private double unstretchedSpringLength;
         private List<Projectile> Projectiles;
+        private Level level { get; set; }
 
-        public Engine(double gravityForce, double springCoefficient, double unstretchedSpringLength)
+        public Engine(double gravityForce, double springCoefficient, double unstretchedSpringLength, Level level)
         {
             Projectiles = new List<Projectile>();
             GravityForce = gravityForce;
@@ -26,8 +28,9 @@ namespace Utility
             this.springCoefficient = springCoefficient;
             this.unstretchedSpringLength = unstretchedSpringLength;
             Time = 0;
+            this.level = level;
         }
-        
+
         public void addProjectile(Projectile projectile)
         {
             Projectiles.Add(projectile);
@@ -59,21 +62,38 @@ namespace Utility
             projectile.Move(tickLength, NetForce);
             Time += tickLength;
             
-
         }
 
-        public void SimulateWorld(Projectile projectile, double tickLength, double runTime)
+        private void TickAll(double tickLength)
         {
-            while (Time < runTime)
+            foreach (Projectile projectile in Projectiles)
             {
                 Tick(projectile, tickLength);
                 Console.WriteLine($"{Math.Round(Time, 3)}\t\t{Math.Round(projectile.Position.X, 4)}\t\t{Math.Round(projectile.Position.Y, 4)}" +
                 $"\t\t{Math.Round(projectile.Position.Z, 4)}\t\t{Math.Round(projectile.Velocity.Magnitude, 4)}\t\t{Math.Round(projectile.Acceleration.Magnitude, 4)}");
             }
         }
-
-
-
+        public void SimulateWorld(double tickLength, double runTime)
+        {
+            switch(level){
+                case Level.ONE:
+                case Level.TWO:
+                    while (Projectiles[0].Position.Z >= 0)
+                    {
+                        TickAll(tickLength);
+                    }
+                    break;
+                case Level.THREE:
+                    while (Time < runTime)
+                    {
+                        TickAll(tickLength);
+                    }
+                    break;
+                case Level.NONE:
+                    Console.WriteLine("Unhandled switch case!!!!");
+                    break;
+            }
+        }
 
     }
 }
